@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<package>
+  <name>robotis_op_simulation_control</name>
+  <version>1.0.0</version>
+  <description>The robotis_op_simulation_control providing control for the simulated ROBOTIS OP. Based on the darwin_control package by Philippe Capdepuy</description>
+
+  <maintainer email="inna@robotis.com">Inna Tlisov (ROBOTIS)</maintainer>
+
+  <license>BSD</license>
+
+  <url type="website">http://wiki.ros.org/robotis_op_simulation_control</url>
+
+  <author email="pc@humarobotics.com">Philippe Capdepuy</author>
+  <author email="kevin.daun@freenet.de">Kevin Daun</author>
+
+
+  <buildtool_depend>catkin</buildtool_depend>
+
+  <run_depend>robotis_op_description</run_depend>
+<!--  <run_depend>gazebo_ros</run_depend> -->
+
+
+</package>
