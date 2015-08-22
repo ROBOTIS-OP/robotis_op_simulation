@@ -1,0 +1,23 @@
+<launch>
+
+  <rosparam file="$(find robotis_op_simulation_control)/config/trajectory_control.yaml" command="load"/>
+
+
+  <!-- load the controllers -->
+    <node name="controller_spawner" pkg="controller_manager" type="spawner" respawn="false"
+    output="screen" ns="/darwin" args=" joint_state_controller
+left_arm_traj_controller
+right_arm_traj_controller
+left_leg_traj_controller
+right_leg_traj_controller
+head_traj_controller
+"/>
+    
+
+  <!-- convert joint states to TF transforms for rviz, etc -->
+  <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher"
+    respawn="false" output="screen">
+    <remap from="/joint_states" to="/darwin/joint_states" />
+  </node>
+
+</launch>

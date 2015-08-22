@@ -1,0 +1,173 @@
+
+# trajectory controllers ---------------------------------------
+darwin:
+# robotis op:
+  joint_state_controller:
+    type: joint_state_controller/JointStateController
+    publish_rate: 50  
+    
+  left_arm_traj_controller:
+    type: effort_controllers/JointTrajectoryController
+    joints:
+      - j_shoulder_l
+      - j_high_arm_l
+      - j_low_arm_l
+      - j_wrist_l
+      - j_gripper_l
+      
+    gains: # Required because we're controlling an effort interface
+      j_shoulder_l: {p: &kp_shoulder_pitch 300,  d: &kd_shoulder_pitch 0.01, i: &ki_default 100, i_clamp_min: &ki__clamp_default 0, i_clamp_max: *ki__clamp_default}
+      j_high_arm_l: {p: &kp_shoulder_roll 300,  d: &kd_shoulder_roll 1, i: *ki_default, i_clamp_min: *ki__clamp_default, i_clamp_max: *ki__clamp_default}
+      j_low_arm_l: {p: &kp_shoulder_yaw 200,  d: &kd_shoulder_yaw 0.01, i: *ki_default, i_clamp_min: *ki__clamp_default, i_clamp_max: *ki__clamp_default}
+      j_wrist_l: {p: &kp_elbow 300,  d: &kd_elbow 0.01, i: *ki_default, i_clamp_min: *ki__clamp_default, i_clamp_max: *ki__clamp_default}
+      j_gripper_l: {p: &kp_default_arms 50,  d: &kd_default_arms 0.01, i: *ki_default, i_clamp_min: *ki__clamp_default, i_clamp_max: *ki__clamp_default}
+
+    constraints:
+      goal_time: &goal_time_constraint 4.0
+      stopped_velocity_tolerance: 1.0
+      j_shoulder_l:
+        goal: &goal_pos_constraint 0.5
+        trajectory: &trajectory_pos_constraint 1.0
+      j_high_arm_l:
+        goal: *goal_pos_constraint
+        trajectory: *trajectory_pos_constraint
+      j_low_arm_l:
+        goal: *goal_pos_constraint
+        trajectory: *trajectory_pos_constraint
+      j_wrist_l:
+        goal: *goal_pos_constraint
+        trajectory: *trajectory_pos_constraint
+      j_gripper_l:
+        goal: *goal_pos_constraint
+        trajectory: *trajectory_pos_constraint
+        
+    stop_trajectory_duration: 1.0
+
+
+  right_arm_traj_controller:
+    type: effort_controllers/JointTrajectoryController
+    joints:
+      - j_shoulder_r
+      - j_high_arm_r
+      - j_low_arm_r
+      - j_wrist_r
+      - j_gripper_r
+      
+    gains: # Required because we're controlling an effort interface
+      j_shoulder_r: {p: *kp_shoulder_pitch,  d: *kd_shoulder_pitch, i: *ki_default, i_clamp_min: *ki__clamp_default, i_clamp_max: *ki__clamp_default}
+      j_high_arm_r: {p: *kp_shoulder_roll,  d: *kd_shoulder_roll, i: *ki_default, i_clamp_min: *ki__clamp_default, i_clamp_max: *ki__clamp_default}
+      j_low_arm_r: {p: *kp_shoulder_yaw,  d: *kd_shoulder_yaw, i: *ki_default, i_clamp_min: *ki__clamp_default, i_clamp_max: *ki__clamp_default}
+      j_wrist_r: {p: *kp_elbow,  d: *kd_elbow, i: *ki_default, i_clamp_min: *ki__clamp_default, i_clamp_max: *ki__clamp_default}
+      j_gripper_r: {p: *kp_default_arms,  d: *kd_default_arms, i: *ki_default, i_clamp_min: *ki__clamp_default, i_clamp_max: *ki__clamp_default}
+
+    constraints:
+      goal_time: *goal_time_constraint
+      stopped_velocity_tolerance: 1.0
+      j_shoulder_r:
+        goal: *goal_pos_constraint
+        trajectory: *trajectory_pos_constraint
+      j_high_arm_r:
+        goal: *goal_pos_constraint
+        trajectory: *trajectory_pos_constraint
+      j_low_arm_r:
+        goal: *goal_pos_constraint
+        trajectory: *trajectory_pos_constraint
+      j_wrist_r:
+        goal: *goal_pos_constraint
+        trajectory: *trajectory_pos_constraint
+      j_gripper_r:
+        goal: *goal_pos_constraint
+        trajectory: *trajectory_pos_constraint
+        
+    stop_trajectory_duration: 1.0
+
+  head_traj_controller:
+    type: effort_controllers/JointTrajectoryController
+    joints:
+      - j_pan
+      - j_tilt
+      
+    gains: # Required because we're controlling an effort interface
+      j_pan: {p: *kp_default_arms,  d: 0, i: *ki_default, i_clamp_min: *ki__clamp_default, i_clamp_max: *ki__clamp_default}
+      j_tilt: {p: *kp_default_arms,  d: 0, i: *ki_default, i_clamp_min: *ki__clamp_default, i_clamp_max: *ki__clamp_default}
+
+    constraints:
+      goal_time: *goal_time_constraint
+      j_pan:
+        goal: *goal_pos_constraint
+      j_tilt:
+        goal: *goal_pos_constraint
+    
+    stop_trajectory_duration: 1.0 
+
+
+  left_leg_traj_controller:
+    type: effort_controllers/JointTrajectoryController
+    joints:
+      - j_pelvis_l
+      - j_thigh1_l
+      - j_thigh2_l
+      - j_tibia_l
+      - j_ankle1_l
+      - j_ankle2_l
+      
+    gains: # Required because we're controlling an effort interface
+      j_pelvis_l: {p: &kp_default 2000,  d: &kd_default 0.5, i: *ki_default, i_clamp_min: *ki__clamp_default, i_clamp_max: *ki__clamp_default}
+      j_thigh1_l: {p: *kp_default,  d: *kd_default, i: *ki_default, i_clamp_min: *ki__clamp_default, i_clamp_max: *ki__clamp_default}
+      j_thigh2_l: {p: &kp_hip_pitch 1000,  d: *kd_default, i: *ki_default, i_clamp_min: *ki__clamp_default, i_clamp_max: *ki__clamp_default}
+      j_tibia_l: {p: *kp_default,  d: 20, i: *ki_default, i_clamp_min: *ki__clamp_default, i_clamp_max: *ki__clamp_default}
+      j_ankle1_l: {p: &kp_ankle 2000,  d: *kd_default, i: *ki_default, i_clamp_min: *ki__clamp_default, i_clamp_max: *ki__clamp_default}
+      j_ankle2_l: {p: *kp_ankle,  d: *kd_default, i: *ki_default, i_clamp_min: *ki__clamp_default, i_clamp_max: *ki__clamp_default}
+      
+    constraints:
+      goal_time: *goal_time_constraint
+      j_pelvis_l:
+        goal: *goal_pos_constraint
+      j_thigh1_l:
+        goal: *goal_pos_constraint
+      j_thigh2_l:
+        goal: *goal_pos_constraint
+      j_tibia_l:
+        goal: *goal_pos_constraint
+      j_ankle1_l:
+        goal: *goal_pos_constraint
+      j_ankle2_l:
+        goal: *goal_pos_constraint     
+    
+    stop_trajectory_duration: 0.0
+
+
+  right_leg_traj_controller:
+    type: effort_controllers/JointTrajectoryController
+    joints:
+      - j_pelvis_r
+      - j_thigh1_r
+      - j_thigh2_r
+      - j_tibia_r
+      - j_ankle1_r
+      - j_ankle2_r
+      
+    gains: # Required because we're controlling an effort interface
+      j_pelvis_r: {p: *kp_default,  d: *kd_default, i: *ki_default, i_clamp_min: *ki__clamp_default, i_clamp_max: *ki__clamp_default}
+      j_thigh1_r: {p: *kp_default,  d: *kd_default, i: *ki_default, i_clamp_min: *ki__clamp_default, i_clamp_max: *ki__clamp_default}
+      j_thigh2_r: {p: *kp_hip_pitch,  d: *kd_default, i: *ki_default, i_clamp_min: *ki__clamp_default, i_clamp_max: *ki__clamp_default}
+      j_tibia_r: {p: *kp_default,  d: 20, i: *ki_default, i_clamp_min: *ki__clamp_default, i_clamp_max: *ki__clamp_default}
+      j_ankle1_r: {p: *kp_ankle,  d: *kd_default, i: *ki_default, i_clamp_min: *ki__clamp_default, i_clamp_max: *ki__clamp_default}
+      j_ankle2_r: {p: *kp_ankle,  d: *kd_default, i: *ki_default, i_clamp_min: *ki__clamp_default, i_clamp_max: *ki__clamp_default}        
+      
+    constraints:
+      goal_time: *goal_time_constraint
+      j_pelvis_r:
+        goal: *goal_pos_constraint
+      j_thigh1_r:
+        goal: *goal_pos_constraint
+      j_thigh2_r:
+        goal: *goal_pos_constraint
+      j_tibia_r:
+        goal: *goal_pos_constraint
+      j_ankle1_r:
+        goal: *goal_pos_constraint
+      j_ankle2_r:
+        goal: *goal_pos_constraint        
+    
+    stop_trajectory_duration: 0.0
