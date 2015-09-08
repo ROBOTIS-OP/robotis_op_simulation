@@ -78,7 +78,6 @@ private:
     void update_param_move();
     void update_param_balance();
 
-    void moveToOrigin();
 
     ros::NodeHandle nh_;
     ros::Subscriber cmd_vel_subscriber_;

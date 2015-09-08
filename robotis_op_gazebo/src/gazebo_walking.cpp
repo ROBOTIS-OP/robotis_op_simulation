@@ -7,7 +7,7 @@
 #include <math.h>
 
 #include <robotis_op_gazebo/math/Matrix.h>
-
+#define MX28_1024
 
 namespace robotis_op {
 using namespace Robot;
@@ -45,21 +45,21 @@ gazebo_walking::gazebo_walking(ros::NodeHandle nh, ros::NodeHandle priv_nh)
     Y_MOVE_AMPLITUDE = 0;
     A_MOVE_AMPLITUDE = 0;
     A_MOVE_AIM_ON = false;
-    BALANCE_ENABLE = true;
+    BALANCE_ENABLE = false;
 
-    j_pelvis_l_publisher_ = nh_.advertise<std_msgs::Float64>("/robotis_op/j_pelvis_l_position_controller/command",1);
-    j_thigh1_l_publisher_ = nh_.advertise<std_msgs::Float64>("/robotis_op/j_thigh1_l_position_controller/command",1);
-    j_thigh2_l_publisher_ = nh_.advertise<std_msgs::Float64>("/robotis_op/j_thigh2_l_position_controller/command",1);
-    j_tibia_l_publisher_ = nh_.advertise<std_msgs::Float64>("/robotis_op/j_tibia_l_position_controller/command",1);
-    j_ankle1_l_publisher_ = nh_.advertise<std_msgs::Float64>("/robotis_op/j_ankle1_l_position_controller/command",1);
-    j_ankle2_l_publisher_ = nh_.advertise<std_msgs::Float64>("/robotis_op/j_ankle2_l_position_controller/command",1);
+    j_pelvis_l_publisher_ = nh_.advertise<std_msgs::Float64>("/darwin/j_pelvis_l_position_controller/command",1);
+    j_thigh1_l_publisher_ = nh_.advertise<std_msgs::Float64>("/darwin/j_thigh1_l_position_controller/command",1);
+    j_thigh2_l_publisher_ = nh_.advertise<std_msgs::Float64>("/darwin/j_thigh2_l_position_controller/command",1);
+    j_tibia_l_publisher_ = nh_.advertise<std_msgs::Float64>("/darwin/j_tibia_l_position_controller/command",1);
+    j_ankle1_l_publisher_ = nh_.advertise<std_msgs::Float64>("/darwin/j_ankle1_l_position_controller/command",1);
+    j_ankle2_l_publisher_ = nh_.advertise<std_msgs::Float64>("/darwin/j_ankle2_l_position_controller/command",1);
 
-    j_pelvis_r_publisher_ = nh_.advertise<std_msgs::Float64>("/robotis_op/j_pelvis_r_position_controller/command",1);
-    j_thigh1_r_publisher_ = nh_.advertise<std_msgs::Float64>("/robotis_op/j_thigh1_r_position_controller/command",1);
-    j_thigh2_r_publisher_ = nh_.advertise<std_msgs::Float64>("/robotis_op/j_thigh2_r_position_controller/command",1);
-    j_tibia_r_publisher_ = nh_.advertise<std_msgs::Float64>("/robotis_op/j_tibia_r_position_controller/command",1);
-    j_ankle1_r_publisher_ = nh_.advertise<std_msgs::Float64>("/robotis_op/j_ankle1_r_position_controller/command",1);
-    j_ankle2_r_publisher_ = nh_.advertise<std_msgs::Float64>("/robotis_op/j_ankle2_r_position_controller/command",1);
+    j_pelvis_r_publisher_ = nh_.advertise<std_msgs::Float64>("/darwin/j_pelvis_r_position_controller/command",1);
+    j_thigh1_r_publisher_ = nh_.advertise<std_msgs::Float64>("/darwin/j_thigh1_r_position_controller/command",1);
+    j_thigh2_r_publisher_ = nh_.advertise<std_msgs::Float64>("/darwin/j_thigh2_r_position_controller/command",1);
+    j_tibia_r_publisher_ = nh_.advertise<std_msgs::Float64>("/darwin/j_tibia_r_position_controller/command",1);
+    j_ankle1_r_publisher_ = nh_.advertise<std_msgs::Float64>("/darwin/j_ankle1_r_position_controller/command",1);
+    j_ankle2_r_publisher_ = nh_.advertise<std_msgs::Float64>("/darwin/j_ankle2_r_position_controller/command",1);
 
 }
 
@@ -237,18 +237,6 @@ void gazebo_walking::update_param_balance()
 
 
 
-void gazebo_walking::moveToOrigin()
-{
-    std_msgs::Float64 j_pelvis_l_msg;
-    std_msgs::Float64 j_thigh1_l_msg;
-    std_msgs::Float64 j_thigh2_l_msg;
-    j_pelvis_l_msg.data = 0.78539;
-    j_thigh1_l_msg.data = -0.78539;
-    j_thigh2_l_msg.data = 0.307177;
-    j_pelvis_l_publisher_.publish(j_pelvis_l_msg);
-    j_thigh1_l_publisher_.publish(j_thigh1_l_msg);
-    j_thigh2_l_publisher_.publish(j_thigh2_l_msg);
-}
 
 void gazebo_walking::Start()
 {
@@ -278,7 +266,7 @@ void gazebo_walking::Process()
     //                     R_HIP_YAW, R_HIP_ROLL, R_HIP_PITCH, R_KNEE, R_ANKLE_PITCH, R_ANKLE_ROLL, L_HIP_YAW, L_HIP_ROLL, L_HIP_PITCH, L_KNEE, L_ANKLE_PITCH, L_ANKLE_ROLL, R_ARM_SWING, L_ARM_SWING
     int dir[14]          = {   -1,        -1,          1,         1,         -1,            1,          -1,        -1,         -1,         -1,         1,            1,           1,           -1      };
     double initAngle[14] = {   0.0,       0.0,        0.0,       0.0,        0.0,          0.0,         0.0,       0.0,        0.0,        0.0,       0.0,          0.0,       -48.345,       41.313    };
-    int outValue[14];
+    double outValue[14];
 
     // Update walk parameters
     if(m_Time == 0)
@@ -477,8 +465,10 @@ void gazebo_walking::Process()
         else if(i == 2 || i == 8) // R_HIP_PITCH or L_HIP_PITCH
             offset -= (double)dir[i] * HIP_PITCH_OFFSET * 3.413;
 
-        outValue[i] = initAngle[i] + (int)offset; //todo check MX28::Angle2Value(initAngle[i]) + (int)offset;
-    }
+
+
+        outValue[i] = (offset*0.293)/(180.0/M_PI);//initAngle[i] + (int)offset; //todo check MX28::Angle2Value(initAngle[i]) + (int)offset;
+ }
 
     // adjust balance offset
     if(BALANCE_ENABLE == true)
@@ -512,18 +502,39 @@ void gazebo_walking::Process()
 #endif
     }
 
-    /**todo m_Joint.SetValue(JointData::ID_R_HIP_YAW,           outValue[0]);
-    m_Joint.SetValue(JointData::ID_R_HIP_ROLL,          outValue[1]);
-    m_Joint.SetValue(JointData::ID_R_HIP_PITCH,         outValue[2]);
-    m_Joint.SetValue(JointData::ID_R_KNEE,              outValue[3]);
-    m_Joint.SetValue(JointData::ID_R_ANKLE_PITCH,       outValue[4]);
-    m_Joint.SetValue(JointData::ID_R_ANKLE_ROLL,        outValue[5]);
-    m_Joint.SetValue(JointData::ID_L_HIP_YAW,           outValue[6]);
-    m_Joint.SetValue(JointData::ID_L_HIP_ROLL,          outValue[7]);
-    m_Joint.SetValue(JointData::ID_L_HIP_PITCH,         outValue[8]);
-    m_Joint.SetValue(JointData::ID_L_KNEE,              outValue[9]);
-    m_Joint.SetValue(JointData::ID_L_ANKLE_PITCH,       outValue[10]);
-    m_Joint.SetValue(JointData::ID_L_ANKLE_ROLL,        outValue[11]);
+    /**todo 
+ID_R_SHOULDER_PITCH     = 1,
+			ID_L_SHOULDER_PITCH     = 2,
+			ID_R_SHOULDER_ROLL      = 3,
+			ID_L_SHOULDER_ROLL      = 4,
+			ID_R_ELBOW              = 5,
+			ID_L_ELBOW              = 6,
+			ID_R_HIP_YAW            = 7,
+			ID_L_HIP_YAW            = 8,
+			ID_R_HIP_ROLL           = 9,
+			ID_L_HIP_ROLL           = 10,
+			ID_R_HIP_PITCH          = 11,
+			ID_L_HIP_PITCH          = 12,
+			ID_R_KNEE               = 13,
+			ID_L_KNEE               = 14,
+			ID_R_ANKLE_PITCH        = 15,
+			ID_L_ANKLE_PITCH        = 16,
+			ID_R_ANKLE_ROLL         = 17,
+			ID_L_ANKLE_ROLL         = 18,
+			ID_HEAD_PAN             = 19,
+			ID_HEAD_TILT            = 20,
+    m_Joint.SetValue(JointData::ID_R_HIP_YAW, 7           outValue[0]);
+    m_Joint.SetValue(JointData::ID_R_HIP_ROLL,  9        outValue[1]);
+    m_Joint.SetValue(JointData::ID_R_HIP_PITCH,  11       outValue[2]);
+    m_Joint.SetValue(JointData::ID_R_KNEE,       13       outValue[3]);
+    m_Joint.SetValue(JointData::ID_R_ANKLE_PITCH,  15     outValue[4]);
+    m_Joint.SetValue(JointData::ID_R_ANKLE_ROLL,   17     outValue[5]);
+    m_Joint.SetValue(JointData::ID_L_HIP_YAW,       8    outValue[6]);
+    m_Joint.SetValue(JointData::ID_L_HIP_ROLL,      10    outValue[7]);
+    m_Joint.SetValue(JointData::ID_L_HIP_PITCH,     12    outValue[8]);
+    m_Joint.SetValue(JointData::ID_L_KNEE,         14     outValue[9]);
+    m_Joint.SetValue(JointData::ID_L_ANKLE_PITCH,   16    outValue[10]);
+    m_Joint.SetValue(JointData::ID_L_ANKLE_ROLL,     18   outValue[11]);
     m_Joint.SetValue(JointData::ID_R_SHOULDER_PITCH,    outValue[12]);
     m_Joint.SetValue(JointData::ID_L_SHOULDER_PITCH,    outValue[13]);
     m_Joint.SetAngle(JointData::ID_HEAD_PAN, A_MOVE_AMPLITUDE);
@@ -534,6 +545,48 @@ void gazebo_walking::Process()
         m_Joint.SetIGain(id, I_GAIN);
         m_Joint.SetDGain(id, D_GAIN);
     }**/
+    std_msgs::Float64 j_pelvis_l_msg;
+    std_msgs::Float64 j_thigh1_l_msg;
+    std_msgs::Float64 j_thigh2_l_msg;
+    std_msgs::Float64 j_tibia_l_msg;
+    std_msgs::Float64 j_ankle1_l_msg;
+    std_msgs::Float64 j_ankle2_l_msg;
+    std_msgs::Float64 j_pelvis_r_msg;
+    std_msgs::Float64 j_thigh1_r_msg;
+    std_msgs::Float64 j_thigh2_r_msg;
+    std_msgs::Float64 j_tibia_r_msg;
+    std_msgs::Float64 j_ankle1_r_msg;
+    std_msgs::Float64 j_ankle2_r_msg;
+
+
+
+    j_pelvis_r_msg.data = outValue[0];
+    j_pelvis_l_msg.data = outValue[6];
+    j_thigh1_r_msg.data = outValue[1];
+    j_thigh1_l_msg.data = outValue[7];
+    j_thigh2_r_msg.data = outValue[2];
+    j_thigh2_l_msg.data = outValue[8];
+    j_tibia_r_msg.data = outValue[3];
+    j_tibia_l_msg.data = outValue[9];
+    j_ankle1_r_msg.data = outValue[4];
+    j_ankle1_l_msg.data = outValue[10];
+    j_ankle2_r_msg.data = outValue[5];
+    j_ankle2_l_msg.data = outValue[11];
+
+    j_pelvis_l_publisher_.publish(j_pelvis_l_msg);
+    j_thigh1_l_publisher_.publish(j_thigh1_l_msg);
+    j_thigh2_l_publisher_.publish(j_thigh2_l_msg);
+    j_tibia_l_publisher_.publish(j_tibia_l_msg);
+    j_ankle1_l_publisher_.publish(j_ankle1_l_msg);
+    j_ankle2_l_publisher_.publish(j_ankle2_l_msg);
+
+    j_pelvis_r_publisher_.publish(j_pelvis_r_msg);
+    j_thigh1_r_publisher_.publish(j_thigh1_r_msg);
+    j_thigh2_r_publisher_.publish(j_thigh2_r_msg);
+    j_tibia_r_publisher_.publish(j_tibia_r_msg);
+    j_ankle1_r_publisher_.publish(j_ankle1_r_msg);
+    j_ankle2_r_publisher_.publish(j_ankle2_r_msg);
+
 }
 
 }

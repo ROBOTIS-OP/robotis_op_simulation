@@ -8,7 +8,8 @@ int main(int argc, char **argv)
 
   ros::NodeHandle nh;
   double control_rate;
-  nh.param("robotis_op_walking/control_rate", control_rate, 100.0);
+  nh.param("robotis_op_walking/control_rate", control_rate, 125.0);
+  control_rate = 125.0;
 
   gazebo_walking gazebo_walking(nh, ros::NodeHandle("~"));
 
@@ -17,6 +18,10 @@ int main(int argc, char **argv)
 
   ros::Time last_time = ros::Time::now();
   ros::Rate rate(control_rate);
+  ROS_INFO("Starting walking");
+  gazebo_walking.Start();
+
+  ROS_INFO("Started walking");
 
 
   while (ros::ok())
@@ -24,7 +29,8 @@ int main(int argc, char **argv)
       rate.sleep();
       ros::Time current_time = ros::Time::now();
       ros::Duration elapsed_time = current_time - last_time;
-      gazebo_walking.update(current_time, elapsed_time);
+      gazebo_walking.Process();
+     // gazebo_walking.update(current_time, elapsed_time);
       last_time = current_time;
   }
 
