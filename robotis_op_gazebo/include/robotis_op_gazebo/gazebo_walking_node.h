@@ -7,6 +7,7 @@
 
 #include <std_msgs/Bool.h>
 #include <geometry_msgs/Twist.h>
+#include <sensor_msgs/Imu.h>
 
 namespace robotis_op {
 
@@ -18,6 +19,7 @@ public:
     void Process();
     void enableWalkCb(std_msgs::BoolConstPtr enable);
     void cmdVelCb(const geometry_msgs::Twist::ConstPtr& msg);
+    void imuCb(const sensor_msgs::ImuConstPtr msg);
 
 
 protected:
@@ -30,6 +32,7 @@ private:
     ros::NodeHandle nh_;
     ros::Subscriber cmd_vel_subscriber_;
     ros::Subscriber enable_walking_subscriber_;
+    ros::Subscriber imu_subscriber_;
 
     ros::Publisher j_pelvis_l_publisher_;
     ros::Publisher j_thigh1_l_publisher_;

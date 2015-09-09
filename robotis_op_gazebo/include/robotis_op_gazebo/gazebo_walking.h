@@ -67,6 +67,9 @@ public:
     int    D_GAIN;
 
 
+    double rlGyroErr;
+    double fbGyroErr;
+
 protected:
 
 

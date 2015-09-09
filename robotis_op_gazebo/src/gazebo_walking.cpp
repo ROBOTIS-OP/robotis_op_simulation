@@ -17,6 +17,10 @@ using namespace Robot;
 GazeboWalking::GazeboWalking(ros::NodeHandle nh)
     : nh_(nh)
 {
+
+    rlGyroErr = 0.0;
+    fbGyroErr = 0.0;
+
     X_OFFSET = -10;
     Y_OFFSET = 5;
     Z_OFFSET = 20;
@@ -24,10 +28,10 @@ GazeboWalking::GazeboWalking(ros::NodeHandle nh)
     P_OFFSET = 0;
     A_OFFSET = 0;
     HIP_PITCH_OFFSET = 13.0;
-    PERIOD_TIME = 600;
+    PERIOD_TIME = 1000; //600
     DSP_RATIO = 0.1;
     STEP_FB_RATIO = 0.28;
-    Z_MOVE_AMPLITUDE = 40;
+    Z_MOVE_AMPLITUDE = 60; //40
     Y_SWAP_AMPLITUDE = 20.0;
     Z_SWAP_AMPLITUDE = 5;
     PELVIS_OFFSET = 3.0;
@@ -45,7 +49,7 @@ GazeboWalking::GazeboWalking(ros::NodeHandle nh)
     Y_MOVE_AMPLITUDE = 0;
     A_MOVE_AMPLITUDE = 0;
     A_MOVE_AIM_ON = false;
-    BALANCE_ENABLE = false;
+    BALANCE_ENABLE = true;
 
     j_pelvis_l_publisher_ = nh_.advertise<std_msgs::Float64>("/darwin/j_pelvis_l_position_controller/command",1);
     j_thigh1_l_publisher_ = nh_.advertise<std_msgs::Float64>("/darwin/j_thigh1_l_position_controller/command",1);
@@ -465,41 +469,24 @@ void GazeboWalking::Process(double *outValue)
         else if(i == 2 || i == 8) // R_HIP_PITCH or L_HIP_PITCH
             offset -= (double)dir[i] * HIP_PITCH_OFFSET * 3.413;
 
-
-
         outValue[i] = (offset*0.293)/(180.0/M_PI);//initAngle[i] + (int)offset; //todo check MX28::Angle2Value(initAngle[i]) + (int)offset;
  }
 
     // adjust balance offset
     if(BALANCE_ENABLE == true)
     {
-        double rlGyroErr = 0; // MotionStatus::RL_GYRO; //todo
-        double fbGyroErr = 0; // MotionStatus::FB_GYRO; //todo
-#ifdef MX28_1024
-        outValue[1] += (int)(dir[1] * rlGyroErr * BALANCE_HIP_ROLL_GAIN); // R_HIP_ROLL
-        outValue[7] += (int)(dir[7] * rlGyroErr * BALANCE_HIP_ROLL_GAIN); // L_HIP_ROLL
 
-        outValue[3] -= (int)(dir[3] * fbGyroErr * BALANCE_KNEE_GAIN); // R_KNEE
-        outValue[9] -= (int)(dir[9] * fbGyroErr * BALANCE_KNEE_GAIN); // L_KNEE
+        outValue[1] += (dir[1] * rlGyroErr * BALANCE_HIP_ROLL_GAIN); // R_HIP_ROLL
+        outValue[7] += (dir[7] * rlGyroErr * BALANCE_HIP_ROLL_GAIN); // L_HIP_ROLL
 
-        outValue[4] -= (int)(dir[4] * fbGyroErr * BALANCE_ANKLE_PITCH_GAIN); // R_ANKLE_PITCH
-        outValue[10] -= (int)(dir[10] * fbGyroErr * BALANCE_ANKLE_PITCH_GAIN); // L_ANKLE_PITCH
+        outValue[3] -= (dir[3] * fbGyroErr * BALANCE_KNEE_GAIN); // R_KNEE
+        outValue[9] -= (dir[9] * fbGyroErr * BALANCE_KNEE_GAIN); // L_KNEE
 
-        outValue[5] -= (int)(dir[5] * rlGyroErr * BALANCE_ANKLE_ROLL_GAIN); // R_ANKLE_ROLL
-        outValue[11] -= (int)(dir[11] * rlGyroErr * BALANCE_ANKLE_ROLL_GAIN); // L_ANKLE_ROLL
-#else
-        outValue[1] += (int)(dir[1] * rlGyroErr * BALANCE_HIP_ROLL_GAIN*4); // R_HIP_ROLL
-        outValue[7] += (int)(dir[7] * rlGyroErr * BALANCE_HIP_ROLL_GAIN*4); // L_HIP_ROLL
+        outValue[4] -= (dir[4] * fbGyroErr * BALANCE_ANKLE_PITCH_GAIN); // R_ANKLE_PITCH
+        outValue[10] -= (dir[10] * fbGyroErr * BALANCE_ANKLE_PITCH_GAIN); // L_ANKLE_PITCH
 
-        outValue[3] -= (int)(dir[3] * fbGyroErr * BALANCE_KNEE_GAIN*4); // R_KNEE
-        outValue[9] -= (int)(dir[9] * fbGyroErr * BALANCE_KNEE_GAIN*4); // L_KNEE
-
-        outValue[4] -= (int)(dir[4] * fbGyroErr * BALANCE_ANKLE_PITCH_GAIN*4); // R_ANKLE_PITCH
-        outValue[10] -= (int)(dir[10] * fbGyroErr * BALANCE_ANKLE_PITCH_GAIN*4); // L_ANKLE_PITCH
-
-        outValue[5] -= (int)(dir[5] * rlGyroErr * BALANCE_ANKLE_ROLL_GAIN*4); // R_ANKLE_ROLL
-        outValue[11] -= (int)(dir[11] * rlGyroErr * BALANCE_ANKLE_ROLL_GAIN*4); // L_ANKLE_ROLL
-#endif
+        outValue[5] -= (dir[5] * rlGyroErr * BALANCE_ANKLE_ROLL_GAIN); // R_ANKLE_ROLL
+        outValue[11] -= (dir[11] * rlGyroErr * BALANCE_ANKLE_ROLL_GAIN); // L_ANKLE_ROLL
     }
 
 

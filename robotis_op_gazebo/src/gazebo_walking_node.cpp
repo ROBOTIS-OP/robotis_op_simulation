@@ -40,8 +40,9 @@ GazeboWalkingNode::GazeboWalkingNode(ros::NodeHandle nh)
     j_ankle2_r_publisher_ = nh_.advertise<std_msgs::Float64>("/darwin/j_ankle2_r_position_controller/command",1);
     j_shoulder_r_publisher_ = nh_.advertise<std_msgs::Float64>("/darwin/j_shoulder_l_position_controller/command",1);
 
-    cmd_vel_subscriber_ = nh_.subscribe("cmd_vel", 100, &GazeboWalkingNode::cmdVelCb, this);
-    enable_walking_subscriber_ = nh_.subscribe("enable_walking", 100, &GazeboWalkingNode::enableWalkCb, this);
+    cmd_vel_subscriber_ = nh_.subscribe("/darwin/cmd_vel", 100, &GazeboWalkingNode::cmdVelCb, this);
+    enable_walking_subscriber_ = nh_.subscribe("/darwin/enable_walking", 100, &GazeboWalkingNode::enableWalkCb, this);
+    imu_subscriber_ = nh_.subscribe("/darwin/imu", 100, &GazeboWalkingNode::imuCb, this);
 
 
 }
@@ -71,7 +72,7 @@ void GazeboWalkingNode::Process()
     std_msgs::Float64 j_ankle2_r_msg;
     std_msgs::Float64 j_shoulder_r_msg;
 
-    double outValue[14]; //todo
+    double outValue[14];
     walking_.Process(&outValue[0]);
 
 
@@ -136,6 +137,14 @@ void GazeboWalkingNode::enableWalkCb(std_msgs::BoolConstPtr enable)
             walking_.Stop();
         }
     }
+}
+
+
+
+void GazeboWalkingNode::imuCb(sensor_msgs::ImuConstPtr msg)
+{
+    walking_.fbGyroErr = msg->linear_acceleration.x*0.1;
+    walking_.rlGyroErr = -msg->linear_acceleration.y*0.02;
 }
 
 }
