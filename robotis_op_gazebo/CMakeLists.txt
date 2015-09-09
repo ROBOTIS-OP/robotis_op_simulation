@@ -36,6 +36,7 @@ include_directories(include ${catkin_INCLUDE_DIRS})
 ## Specify additional locations of header files
 set(HEADERS
     include/${PROJECT_NAME}/gazebo_walking.h
+    include/${PROJECT_NAME}/gazebo_walking_node.h
     include/${PROJECT_NAME}/math/Matrix.h
     include/${PROJECT_NAME}/math/Plane.h
     include/${PROJECT_NAME}/math/Point.h

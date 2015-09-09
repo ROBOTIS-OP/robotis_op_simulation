@@ -1,16 +1,15 @@
-#ifndef HECTOR_QRCODE_DETECTION_H
-#define HECTOR_QRCODE_DETECTION_H
-
+#ifndef GAZEBO_WALKING_H
+#define GAZEBO_WALKING_H
 #include <ros/ros.h>
 #include <hector_worldmodel_msgs/ImagePercept.h>
 
 
 namespace robotis_op {
 
-class gazebo_walking {
+class GazeboWalking {
 public:
-    gazebo_walking(ros::NodeHandle nh, ros::NodeHandle priv_nh);
-    ~gazebo_walking();
+    GazeboWalking(ros::NodeHandle nh);
+    ~GazeboWalking();
 
     void update(ros::Time time, ros::Duration period);
     int GetCurrentPhase()		{ return m_Phase; }
@@ -21,7 +20,7 @@ public:
     void Initialize();
     void Start();
     void Stop();
-    void Process();
+    void Process(double *outValue);
     bool IsRunning();
 
     enum
@@ -163,4 +162,4 @@ private:
 };
 
 }
-#endif
+#endif //GAZEBO_WALKING_H
