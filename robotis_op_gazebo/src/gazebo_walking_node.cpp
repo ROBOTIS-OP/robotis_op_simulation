@@ -21,28 +21,28 @@ GazeboWalkingNode::GazeboWalkingNode(ros::NodeHandle nh)
     , walking_(nh)
 {
 
-    j_pelvis_l_publisher_ = nh_.advertise<std_msgs::Float64>("/darwin/j_pelvis_l_position_controller/command",1);
-    j_thigh1_l_publisher_ = nh_.advertise<std_msgs::Float64>("/darwin/j_thigh1_l_position_controller/command",1);
-    j_thigh2_l_publisher_ = nh_.advertise<std_msgs::Float64>("/darwin/j_thigh2_l_position_controller/command",1);
-    j_tibia_l_publisher_ = nh_.advertise<std_msgs::Float64>("/darwin/j_tibia_l_position_controller/command",1);
-    j_ankle1_l_publisher_ = nh_.advertise<std_msgs::Float64>("/darwin/j_ankle1_l_position_controller/command",1);
-    j_ankle2_l_publisher_ = nh_.advertise<std_msgs::Float64>("/darwin/j_ankle2_l_position_controller/command",1);
-    j_shoulder_l_publisher_ = nh_.advertise<std_msgs::Float64>("/darwin/j_shoulder_l_position_controller/command",1);
+    j_pelvis_l_publisher_ = nh_.advertise<std_msgs::Float64>("/robotis_op/j_pelvis_l_position_controller/command",1);
+    j_thigh1_l_publisher_ = nh_.advertise<std_msgs::Float64>("/robotis_op/j_thigh1_l_position_controller/command",1);
+    j_thigh2_l_publisher_ = nh_.advertise<std_msgs::Float64>("/robotis_op/j_thigh2_l_position_controller/command",1);
+    j_tibia_l_publisher_ = nh_.advertise<std_msgs::Float64>("/robotis_op/j_tibia_l_position_controller/command",1);
+    j_ankle1_l_publisher_ = nh_.advertise<std_msgs::Float64>("/robotis_op/j_ankle1_l_position_controller/command",1);
+    j_ankle2_l_publisher_ = nh_.advertise<std_msgs::Float64>("/robotis_op/j_ankle2_l_position_controller/command",1);
+    j_shoulder_l_publisher_ = nh_.advertise<std_msgs::Float64>("/robotis_op/j_shoulder_l_position_controller/command",1);
 
 
 
 
-    j_pelvis_r_publisher_ = nh_.advertise<std_msgs::Float64>("/darwin/j_pelvis_r_position_controller/command",1);
-    j_thigh1_r_publisher_ = nh_.advertise<std_msgs::Float64>("/darwin/j_thigh1_r_position_controller/command",1);
-    j_thigh2_r_publisher_ = nh_.advertise<std_msgs::Float64>("/darwin/j_thigh2_r_position_controller/command",1);
-    j_tibia_r_publisher_ = nh_.advertise<std_msgs::Float64>("/darwin/j_tibia_r_position_controller/command",1);
-    j_ankle1_r_publisher_ = nh_.advertise<std_msgs::Float64>("/darwin/j_ankle1_r_position_controller/command",1);
-    j_ankle2_r_publisher_ = nh_.advertise<std_msgs::Float64>("/darwin/j_ankle2_r_position_controller/command",1);
-    j_shoulder_r_publisher_ = nh_.advertise<std_msgs::Float64>("/darwin/j_shoulder_l_position_controller/command",1);
+    j_pelvis_r_publisher_ = nh_.advertise<std_msgs::Float64>("/robotis_op/j_pelvis_r_position_controller/command",1);
+    j_thigh1_r_publisher_ = nh_.advertise<std_msgs::Float64>("/robotis_op/j_thigh1_r_position_controller/command",1);
+    j_thigh2_r_publisher_ = nh_.advertise<std_msgs::Float64>("/robotis_op/j_thigh2_r_position_controller/command",1);
+    j_tibia_r_publisher_ = nh_.advertise<std_msgs::Float64>("/robotis_op/j_tibia_r_position_controller/command",1);
+    j_ankle1_r_publisher_ = nh_.advertise<std_msgs::Float64>("/robotis_op/j_ankle1_r_position_controller/command",1);
+    j_ankle2_r_publisher_ = nh_.advertise<std_msgs::Float64>("/robotis_op/j_ankle2_r_position_controller/command",1);
+    j_shoulder_r_publisher_ = nh_.advertise<std_msgs::Float64>("/robotis_op/j_shoulder_l_position_controller/command",1);
 
-    cmd_vel_subscriber_ = nh_.subscribe("/darwin/cmd_vel", 100, &GazeboWalkingNode::cmdVelCb, this);
-    enable_walking_subscriber_ = nh_.subscribe("/darwin/enable_walking", 100, &GazeboWalkingNode::enableWalkCb, this);
-    imu_subscriber_ = nh_.subscribe("/darwin/imu", 100, &GazeboWalkingNode::imuCb, this);
+    cmd_vel_subscriber_ = nh_.subscribe("/robotis_op/cmd_vel", 100, &GazeboWalkingNode::cmdVelCb, this);
+    enable_walking_subscriber_ = nh_.subscribe("/robotis_op/enable_walking", 100, &GazeboWalkingNode::enableWalkCb, this);
+    imu_subscriber_ = nh_.subscribe("/robotis_op/imu", 100, &GazeboWalkingNode::imuCb, this);
 
 
 }
