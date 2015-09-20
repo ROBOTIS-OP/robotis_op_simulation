@@ -1,8 +1,6 @@
 #ifndef GAZEBO_WALKING_H
 #define GAZEBO_WALKING_H
 #include <ros/ros.h>
-#include <hector_worldmodel_msgs/ImagePercept.h>
-
 
 namespace robotis_op {
 
