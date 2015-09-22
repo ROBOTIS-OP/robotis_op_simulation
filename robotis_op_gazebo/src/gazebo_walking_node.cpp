@@ -29,9 +29,6 @@ GazeboWalkingNode::GazeboWalkingNode(ros::NodeHandle nh)
     j_ankle2_l_publisher_ = nh_.advertise<std_msgs::Float64>("/robotis_op/j_ankle2_l_position_controller/command",1);
     j_shoulder_l_publisher_ = nh_.advertise<std_msgs::Float64>("/robotis_op/j_shoulder_l_position_controller/command",1);
 
-
-
-
     j_pelvis_r_publisher_ = nh_.advertise<std_msgs::Float64>("/robotis_op/j_pelvis_r_position_controller/command",1);
     j_thigh1_r_publisher_ = nh_.advertise<std_msgs::Float64>("/robotis_op/j_thigh1_r_position_controller/command",1);
     j_thigh2_r_publisher_ = nh_.advertise<std_msgs::Float64>("/robotis_op/j_thigh2_r_position_controller/command",1);
@@ -43,8 +40,6 @@ GazeboWalkingNode::GazeboWalkingNode(ros::NodeHandle nh)
     cmd_vel_subscriber_ = nh_.subscribe("/robotis_op/cmd_vel", 100, &GazeboWalkingNode::cmdVelCb, this);
     enable_walking_subscriber_ = nh_.subscribe("/robotis_op/enable_walking", 100, &GazeboWalkingNode::enableWalkCb, this);
     imu_subscriber_ = nh_.subscribe("/robotis_op/imu", 100, &GazeboWalkingNode::imuCb, this);
-
-
 }
 
 GazeboWalkingNode::~GazeboWalkingNode()
@@ -147,6 +142,29 @@ void GazeboWalkingNode::imuCb(sensor_msgs::ImuConstPtr msg)
     walking_.rlGyroErr = -msg->linear_acceleration.y*0.02;
 }
 
+
+void GazeboWalkingNode::dynamicReconfigureCb(robotis_op_gazebo::robotis_op_walkingConfig &config, uint32_t level)
+{
+    walking_.X_OFFSET=config.X_OFFSET;
+    walking_.Y_OFFSET=config.Y_OFFSET;
+    walking_.Z_OFFSET=config.Z_OFFSET;
+    walking_.R_OFFSET=config.R_OFFSET;
+    walking_.P_OFFSET=config.P_OFFSET;
+    walking_.A_OFFSET=config.A_OFFSET;
+    walking_.PERIOD_TIME=config.PERIOD_TIME;
+    walking_.DSP_RATIO=config.DSP_RATIO;
+    walking_.STEP_FB_RATIO=config.STEP_FB_RATIO;
+    walking_.Z_MOVE_AMPLITUDE=config.Z_MOVE_AMPLITUDE;
+    walking_.Y_SWAP_AMPLITUDE=config.Y_SWAP_AMPLITUDE;
+    walking_.PELVIS_OFFSET=config.PELVIS_OFFSET;
+    walking_.ARM_SWING_GAIN=config.ARM_SWING_GAIN;
+    walking_.BALANCE_KNEE_GAIN=config.BALANCE_KNEE_GAIN;
+    walking_.BALANCE_ANKLE_PITCH_GAIN=config.BALANCE_ANKLE_PITCH_GAIN;
+    walking_.BALANCE_HIP_ROLL_GAIN=config.BALANCE_HIP_ROLL_GAIN;
+    walking_.BALANCE_ANKLE_ROLL_GAIN=config.BALANCE_ANKLE_ROLL_GAIN;
+    walking_.HIP_PITCH_OFFSET=config.HIP_PITCH_OFFSET;
+}
+
 }
 
 
@@ -171,8 +189,14 @@ int main(int argc, char **argv)
     ROS_INFO("Starting walking");
     //gazebo_walking.Start();
 
-    ROS_INFO("Started walking");
 
+    dynamic_reconfigure::Server<robotis_op_gazebo::robotis_op_walkingConfig> srv;
+    dynamic_reconfigure::Server<robotis_op_gazebo::robotis_op_walkingConfig>::CallbackType cb;
+    cb = boost::bind(&GazeboWalkingNode::dynamicReconfigureCb, &gazebo_walking_node, _1, _2);
+    srv.setCallback(cb);
+
+
+    ROS_INFO("Started walking");
 
     while (ros::ok())
     {
@@ -180,8 +204,8 @@ int main(int argc, char **argv)
         ros::Time current_time = ros::Time::now();
         ros::Duration elapsed_time = current_time - last_time;
         gazebo_walking_node.Process();
-        // gazebo_walking.update(current_time, elapsed_time);
         last_time = current_time;
+
     }
 
     return 0;

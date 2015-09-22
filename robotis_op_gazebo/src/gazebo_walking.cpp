@@ -18,6 +18,9 @@ GazeboWalking::GazeboWalking(ros::NodeHandle nh)
     : nh_(nh)
 {
 
+    m_Ctrl_Running = false;
+    m_Real_Running = false;
+    m_Time = 0.0;
     rlGyroErr = 0.0;
     fbGyroErr = 0.0;
 
@@ -271,7 +274,6 @@ void GazeboWalking::Process(double *outValue)
     int dir[14]          = {   -1,        -1,          1,         1,         -1,            1,          -1,        -1,         -1,         -1,         1,            1,           1,           -1      };
     double initAngle[14] = {   0.0,       0.0,        0.0,       0.0,        0.0,          0.0,         0.0,       0.0,        0.0,        0.0,       0.0,          0.0,       -48.345,       41.313    };
 
-
     // Update walk parameters
     if(m_Time == 0)
     {
@@ -488,8 +490,6 @@ void GazeboWalking::Process(double *outValue)
         outValue[5] -= (dir[5] * rlGyroErr * BALANCE_ANKLE_ROLL_GAIN); // R_ANKLE_ROLL
         outValue[11] -= (dir[11] * rlGyroErr * BALANCE_ANKLE_ROLL_GAIN); // L_ANKLE_ROLL
     }
-
-
 
 }
 

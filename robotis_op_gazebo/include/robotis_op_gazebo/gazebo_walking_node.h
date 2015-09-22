@@ -9,6 +9,10 @@
 #include <geometry_msgs/Twist.h>
 #include <sensor_msgs/Imu.h>
 
+// Dynamic reconfigure
+#include <dynamic_reconfigure/server.h>
+#include <robotis_op_gazebo/robotis_op_walkingConfig.h>
+
 namespace robotis_op {
 
 class GazeboWalkingNode {
@@ -20,14 +24,15 @@ public:
     void enableWalkCb(std_msgs::BoolConstPtr enable);
     void cmdVelCb(const geometry_msgs::Twist::ConstPtr& msg);
     void imuCb(const sensor_msgs::ImuConstPtr msg);
+    void dynamicReconfigureCb(robotis_op_gazebo::robotis_op_walkingConfig &config, uint32_t level);
 
 
+    GazeboWalking walking_;
 protected:
 
 
 private:
 
-    GazeboWalking walking_;
 
     ros::NodeHandle nh_;
     ros::Subscriber cmd_vel_subscriber_;

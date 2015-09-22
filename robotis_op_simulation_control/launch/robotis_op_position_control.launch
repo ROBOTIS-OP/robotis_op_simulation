@@ -1,6 +1,6 @@
 <launch>
 
-  <rosparam file="$(find robotis_op_simulation_control)/config/robotis_op_control.yaml" command="load"/>
+  <rosparam file="$(find robotis_op_simulation_control)/config/robotis_op_effort_position_control.yaml" command="load"/>
 
 
   <!-- load the controllers -->
