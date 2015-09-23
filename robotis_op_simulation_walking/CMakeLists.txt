@@ -15,6 +15,7 @@ find_package(catkin REQUIRED COMPONENTS
 find_package(Boost REQUIRED COMPONENTS system)
 find_package(gazebo REQUIRED)
 
+catkin_python_setup()
 generate_dynamic_reconfigure_options(config/robotis_op_walking.cfg)
 
 catkin_package(
