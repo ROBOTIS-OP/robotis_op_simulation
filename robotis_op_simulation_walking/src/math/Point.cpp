@@ -6,7 +6,7 @@
  */
 
 #include <math.h>
-#include <robotis_op_gazebo/math/Point.h>
+#include <robotis_op_simulation_walking/math/Point.h>
 
 using namespace Robot;
 

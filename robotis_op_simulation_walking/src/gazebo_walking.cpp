@@ -1,12 +1,12 @@
 
-#include <robotis_op_gazebo/gazebo_walking.h>
+#include <robotis_op_simulation_walking/gazebo_walking.h>
 #include <iostream>
 
 #include <stdlib.h>     /* srand, rand */
 #include <std_msgs/Float64.h>
 #include <math.h>
 
-#include <robotis_op_gazebo/math/Matrix.h>
+#include <robotis_op_simulation_walking/math/Matrix.h>
 #define MX28_1024
 
 namespace robotis_op {

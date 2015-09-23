@@ -1,4 +1,4 @@
-#include <robotis_op_gazebo/gazebo_walking_node.h>
+#include <robotis_op_simulation_walking/gazebo_walking_node.h>
 
 using namespace robotis_op;
 
@@ -8,7 +8,7 @@ using namespace robotis_op;
 #include <std_msgs/Float64.h>
 #include <math.h>
 
-#include <robotis_op_gazebo/math/Matrix.h>
+#include <robotis_op_simulation_walking/math/Matrix.h>
 #define MX28_1024
 
 namespace robotis_op {
@@ -16,7 +16,7 @@ using namespace Robot;
 
 
 
-GazeboWalkingNode::GazeboWalkingNode(ros::NodeHandle nh)
+SimulationWalkingNode::SimulationWalkingNode(ros::NodeHandle nh)
     : nh_(nh)
     , walking_(nh)
 {
@@ -37,19 +37,19 @@ GazeboWalkingNode::GazeboWalkingNode(ros::NodeHandle nh)
     j_ankle2_r_publisher_ = nh_.advertise<std_msgs::Float64>("/robotis_op/j_ankle2_r_position_controller/command",1);
     j_shoulder_r_publisher_ = nh_.advertise<std_msgs::Float64>("/robotis_op/j_shoulder_l_position_controller/command",1);
 
-    cmd_vel_subscriber_ = nh_.subscribe("/robotis_op/cmd_vel", 100, &GazeboWalkingNode::cmdVelCb, this);
-    enable_walking_subscriber_ = nh_.subscribe("/robotis_op/enable_walking", 100, &GazeboWalkingNode::enableWalkCb, this);
-    imu_subscriber_ = nh_.subscribe("/robotis_op/imu", 100, &GazeboWalkingNode::imuCb, this);
+    cmd_vel_subscriber_ = nh_.subscribe("/robotis_op/cmd_vel", 100, &SimulationWalkingNode::cmdVelCb, this);
+    enable_walking_subscriber_ = nh_.subscribe("/robotis_op/enable_walking", 100, &SimulationWalkingNode::enableWalkCb, this);
+    imu_subscriber_ = nh_.subscribe("/robotis_op/imu", 100, &SimulationWalkingNode::imuCb, this);
 }
 
-GazeboWalkingNode::~GazeboWalkingNode()
+SimulationWalkingNode::~SimulationWalkingNode()
 {
 }
 
 
 
 
-void GazeboWalkingNode::Process()
+void SimulationWalkingNode::Process()
 {
 
     std_msgs::Float64 j_pelvis_l_msg;
@@ -105,7 +105,7 @@ void GazeboWalkingNode::Process()
 
 }
 
-void GazeboWalkingNode::cmdVelCb(const geometry_msgs::Twist::ConstPtr& msg)
+void SimulationWalkingNode::cmdVelCb(const geometry_msgs::Twist::ConstPtr& msg)
 {
     double period = walking_.PERIOD_TIME;
     walking_.X_MOVE_AMPLITUDE=(msg->linear.x/period*1000.0);
@@ -116,7 +116,7 @@ void GazeboWalkingNode::cmdVelCb(const geometry_msgs::Twist::ConstPtr& msg)
 }
 
 
-void GazeboWalkingNode::enableWalkCb(std_msgs::BoolConstPtr enable)
+void SimulationWalkingNode::enableWalkCb(std_msgs::BoolConstPtr enable)
 {
     if(enable->data)
     {
@@ -136,14 +136,14 @@ void GazeboWalkingNode::enableWalkCb(std_msgs::BoolConstPtr enable)
 
 
 
-void GazeboWalkingNode::imuCb(sensor_msgs::ImuConstPtr msg)
+void SimulationWalkingNode::imuCb(sensor_msgs::ImuConstPtr msg)
 {
     walking_.fbGyroErr = msg->linear_acceleration.x*0.1;
     walking_.rlGyroErr = -msg->linear_acceleration.y*0.02;
 }
 
 
-void GazeboWalkingNode::dynamicReconfigureCb(robotis_op_gazebo::robotis_op_walkingConfig &config, uint32_t level)
+void SimulationWalkingNode::dynamicReconfigureCb(robotis_op_simulation_walking::robotis_op_walkingConfig &config, uint32_t level)
 {
     walking_.X_OFFSET=config.X_OFFSET;
     walking_.Y_OFFSET=config.Y_OFFSET;
@@ -179,7 +179,7 @@ int main(int argc, char **argv)
     nh.param("robotis_op_walking/control_rate", control_rate, 125.0);
     control_rate = 125.0;
 
-    GazeboWalkingNode gazebo_walking_node(nh);
+    SimulationWalkingNode gazebo_walking_node(nh);
 
     ros::AsyncSpinner spinner(4);
     spinner.start();
@@ -190,9 +190,9 @@ int main(int argc, char **argv)
     //gazebo_walking.Start();
 
 
-    dynamic_reconfigure::Server<robotis_op_gazebo::robotis_op_walkingConfig> srv;
-    dynamic_reconfigure::Server<robotis_op_gazebo::robotis_op_walkingConfig>::CallbackType cb;
-    cb = boost::bind(&GazeboWalkingNode::dynamicReconfigureCb, &gazebo_walking_node, _1, _2);
+    dynamic_reconfigure::Server<robotis_op_simulation_walking::robotis_op_walkingConfig> srv;
+    dynamic_reconfigure::Server<robotis_op_simulation_walking::robotis_op_walkingConfig>::CallbackType cb;
+    cb = boost::bind(&SimulationWalkingNode::dynamicReconfigureCb, &gazebo_walking_node, _1, _2);
     srv.setCallback(cb);
 
 

@@ -3,7 +3,7 @@
 
 #include <ros/ros.h>
 
-#include <robotis_op_gazebo/gazebo_walking.h>
+#include <robotis_op_simulation_walking/gazebo_walking.h>
 
 #include <std_msgs/Bool.h>
 #include <geometry_msgs/Twist.h>
@@ -11,20 +11,20 @@
 
 // Dynamic reconfigure
 #include <dynamic_reconfigure/server.h>
-#include <robotis_op_gazebo/robotis_op_walkingConfig.h>
+#include <robotis_op_simulation_walking/robotis_op_walkingConfig.h>
 
 namespace robotis_op {
 
-class GazeboWalkingNode {
+class SimulationWalkingNode {
 public:
-    GazeboWalkingNode(ros::NodeHandle nh);
-    ~GazeboWalkingNode();
+    SimulationWalkingNode(ros::NodeHandle nh);
+    ~SimulationWalkingNode();
 
     void Process();
     void enableWalkCb(std_msgs::BoolConstPtr enable);
     void cmdVelCb(const geometry_msgs::Twist::ConstPtr& msg);
     void imuCb(const sensor_msgs::ImuConstPtr msg);
-    void dynamicReconfigureCb(robotis_op_gazebo::robotis_op_walkingConfig &config, uint32_t level);
+    void dynamicReconfigureCb(robotis_op_simulation_walking::robotis_op_walkingConfig &config, uint32_t level);
 
 
     GazeboWalking walking_;

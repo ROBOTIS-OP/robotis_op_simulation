@@ -1,0 +1,37 @@
+<?xml version="1.0"?>
+<package>
+  <name>robotis_op_simulation_walking</name>
+  <version>0.1.0</version>
+  <description>Provides simulation walking for ROBOTIS OP2 model in ROS. Fake walking based on the darwin_gazebo package by Philippe Capdepuy.</description>
+
+  <maintainer email="inna@robotis.com">Inna Tlisov (ROBOTIS)</maintainer>
+
+
+  <license>BSD</license>
+  <url type="website">http://wiki.ros.org/robotis_op_gazebo</url>
+
+  <author email="kevin.daun@freenet.de">Kevin Daun</author>
+
+
+  <buildtool_depend>catkin</buildtool_depend>
+
+  <build_depend>roscpp</build_depend>
+  <build_depend>gazebo_ros</build_depend>
+  <build_depend>rospy</build_depend>
+  <build_depend>gazebo_ros_control</build_depend>
+  <build_depend>sensor_msgs</build_depend>
+  <build_depend>std_msgs</build_depend>
+  <build_depend>dynamic_reconfigure</build_depend>
+
+
+  <run_depend>roscpp</run_depend>
+  <run_depend>gazebo_ros</run_depend>
+  <run_depend>rospy</run_depend>
+  <run_depend>gazebo_ros_control</run_depend>
+  <run_depend>sensor_msgs</run_depend>
+  <run_depend>std_msgs</run_depend>
+  <run_depend>robotis_op_description</run_depend>
+  <run_depend>hector_gazebo_plugins</run_depend>
+  <run_depend>dynamic_reconfigure</run_depend>
+
+</package>

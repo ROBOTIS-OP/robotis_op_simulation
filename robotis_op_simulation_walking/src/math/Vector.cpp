@@ -6,7 +6,7 @@
  */
 
 #include <math.h>
-#include <robotis_op_gazebo/math/Vector.h>
+#include <robotis_op_simulation_walking/math/Vector.h>
 
 using namespace Robot;
 
