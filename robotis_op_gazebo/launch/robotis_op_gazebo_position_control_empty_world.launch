@@ -11,10 +11,20 @@
     <arg name="paused" value="true"/>
   </include>
 
+  <!-- Robot pose -->
+  <arg name="x" default="2.0"/>
+  <arg name="y" default="0"/>
+  <arg name="z" default="0"/>
+  <arg name="roll" default="0"/>
+  <arg name="pitch" default="0"/>
+  <arg name="yaw" default="0"/>
+
 <node name="spawn_robot" pkg="gazebo_ros" type="spawn_model"
     args="-param robot_description
           -urdf
-          -model robot_description"
+          -model robot_description
+          -x $(arg x) -y $(arg y) -z $(arg z)
+          -R $(arg roll) -P $(arg pitch) -Y $(arg yaw)"
     respawn="false" output="screen" />
 
   <include file="$(find robotis_op_simulation_control)/launch/robotis_op_position_control.launch"/>

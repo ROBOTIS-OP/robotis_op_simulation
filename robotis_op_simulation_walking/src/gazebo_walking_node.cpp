@@ -108,8 +108,8 @@ void SimulationWalkingNode::Process()
 void SimulationWalkingNode::cmdVelCb(const geometry_msgs::Twist::ConstPtr& msg)
 {
     double period = walking_.PERIOD_TIME;
-    walking_.X_MOVE_AMPLITUDE=(msg->linear.x/period*1000.0);
-    walking_.Y_MOVE_AMPLITUDE=(msg->linear.y/period*1000.0);
+    walking_.X_MOVE_AMPLITUDE=(msg->linear.x/period*1000.0*10000.0);
+    walking_.Y_MOVE_AMPLITUDE=(msg->linear.y/period*1000.0*10000.0);
     // compute the angular motion parameters to achieve the desired angular speed
     walking_.A_MOVE_AMPLITUDE=(msg->angular.z/period*180.0)/(2.0*3.14159);
 

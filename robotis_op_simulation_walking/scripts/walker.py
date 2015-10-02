@@ -3,7 +3,7 @@
 from threading import Thread
 import rospy
 import math
-from robotis_op_gazebo.darwin import Darwin
+from robotis_op_simulation_walking.darwin import Darwin
 from geometry_msgs.msg import Twist
 
 
